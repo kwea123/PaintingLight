@@ -197,6 +197,7 @@ def run(image, mask, ambient_intensity, light_intensity, light_source_height, ga
     global gx
     global gy
 
+    count = 0
     while True:
         light_source_location = np.array([[[light_source_height, gy, gx]]], dtype=np.float32)
         light_source_direction = light_source_location / np.sqrt(np.sum(np.square(light_source_location)))
@@ -208,4 +209,10 @@ def run(image, mask, ambient_intensity, light_intensity, light_source_height, ga
         canvas = np.concatenate([raw_image, rendered_image], axis=1).clip(0, 255).astype(np.uint8)
         cv2.imshow('Move your mouse on the canvas to play!', canvas)
         cv2.setMouseCallback('Move your mouse on the canvas to play!', update_mouse)
-        cv2.waitKey(10)
+        key = cv2.waitKey(1)
+        if key == ord('q'): # press q to exit.
+            break
+        elif key == ord('s'):
+            cv2.imwrite(f'{count:03d}.png', canvas[:, canvas.shape[1]//2:])
+            print(f'saved to {count:03d}.png!')
+            count += 1
